@@ -2,7 +2,8 @@
 
  A novel digital image watermarking algorithm that combines the randomness of discrete memristor chaotic mapping with the memory and enhancement properties of the Hopfield neural network is desgined in this paper. This is a complete flowchart of the algorithm. 
 
-![Figure1.jpg](https://s2.loli.net/2024/12/09/miaGrMsnOY8HyVQ.jpg)
+
+<img src="https://s2.loli.net/2024/12/09/miaGrMsnOY8HyVQ.jpg" width="80%" /> <div align="center">
 
 Specifically, a novel two-dimensional discrete memristor mapping system is devised in this study to generate two sets of pseudo-random sequences, respectively, for encrypting the pixel value and position of the watermark image. <br>
 Then, with the aid of the memory and recovery characteristics of the Hopfield neural network, the watermark image extracted from the image is precisely restored. Finally, the extracted watermark images are tested through numerical simulation and visual simulation to validate the efficiency of the algorithm.
@@ -76,7 +77,7 @@ figure;imshow(round(D),[]);%Image after adding watermark  //matlab
 ``` 
 DCT process.<br>
 
-Perform various attacks on watermarked images.
+## Perform various attacks on watermarked images.
 ```matlab
 % hh=fspecial('gaussian',3,0.2); %Define a 3*3 Gaussian filter with a standard deviation of 0.2
 % hh=fspecial('gaussian',3,0.35);standard deviation of 0.35
