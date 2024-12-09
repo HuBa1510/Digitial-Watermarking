@@ -2,8 +2,9 @@
 
  A novel digital image watermarking algorithm that combines the randomness of discrete memristor chaotic mapping with the memory and enhancement properties of the Hopfield neural network is desgined in this paper. This is a complete flowchart of the algorithm. 
 
-
-<img src="https://s2.loli.net/2024/12/09/miaGrMsnOY8HyVQ.jpg" width="80%" /> <div align="center">
+<div align="center">
+<img src="https://s2.loli.net/2024/12/09/miaGrMsnOY8HyVQ.jpg" width="80%" /> <br>
+</div>
 
 Specifically, a novel two-dimensional discrete memristor mapping system is devised in this study to generate two sets of pseudo-random sequences, respectively, for encrypting the pixel value and position of the watermark image. <br>
 Then, with the aid of the memory and recovery characteristics of the Hopfield neural network, the watermark image extracted from the image is precisely restored. Finally, the extracted watermark images are tested through numerical simulation and visual simulation to validate the efficiency of the algorithm.
@@ -11,69 +12,77 @@ Then, with the aid of the memory and recovery characteristics of the Hopfield ne
 ## Analysis of anti-attack performance
 
 ### Spin attack
-![Figure2.jpg](https://s2.loli.net/2024/12/09/uJomFsW5QSTet6a.jpg)
+<div align="center">
+<img src="https://s2.loli.net/2024/12/09/uJomFsW5QSTet6a.jpg" width="80%" />
+</div>
 
 ### Low-pass filtering attacks
-![Figure3.jpg](https://s2.loli.net/2024/12/09/96Cq3PLOmhSYMWj.jpg)
+<div align="center">
+<img src="https://s2.loli.net/2024/12/09/96Cq3PLOmhSYMWj.jpg" width="80%" />
+</div>
 
 ### Shear attack
-![Figure4.jpg](https://s2.loli.net/2024/12/09/LcmGP5FNEQrbdRz.jpg)
+<div align="center">
+ <img src="https://s2.loli.net/2024/12/09/LcmGP5FNEQrbdRz.jpg" width="80%" />
+</div>
 
 ### Noise interference
-![Figure5.jpg](https://s2.loli.net/2024/12/09/WaBpoNTPvnk8fe2.jpg)
+<div align="center">
+ <img src="https://s2.loli.net/2024/12/09/WaBpoNTPvnk8fe2.jpg" width="80%" />
+</div>
 
 ## Run "Main.m"
 ```matlab
-clc;clear//matlab
-I=imread('Peppers.bmp');%Original target image //matlab
-figure;imshow(I);//matlab
-J=imread('logo.png');%Watermark image //matlab
+clc;clear
+I=imread('Peppers.bmp');%Original target image 
+figure;imshow(I);
+J=imread('logo.png');%Watermark image 
 ```
 Load the original target image and watermark image
 
 ```matlab
-J=double(imresize(J(:,:,1),[64,64]));%Select channel 1(let's say RGB) for J and scale it to 64*64;  //matlab
-J=sgn(J);%Convert to 0 or 1  //matlab
-figure;imshow(imresize(J,8));%The picture is displayed 8 times larger  //matlab
+J=double(imresize(J(:,:,1),[64,64]));%Select channel 1(let's say RGB) for J and scale it to 64*64;  
+J=sgn(J);%Convert to 0 or 1  
+figure;imshow(imresize(J,8));%The picture is displayed 8 times larger  
 ```
 The watermark image is preprocessed
 
 ```matlab
-[y,q,Ly1,Ly2]=SineSquaredMemristorShuiyin(1.55,1.8,0.4,0.1,100000); //matlab
+[y,q,Ly1,Ly2]=SineSquaredMemristorShuiyin(1.55,1.8,0.4,0.1,100000); 
 y=y(1000:end); //matlab
-Seq1=y(1:64*64);%Extract 64*64=4096 values from y, sequence 1 //matlab
-Seq2=y(64*64+1:64*64*2);%Extract the next 4096 values from y, from 4097 to 64*64*2=8192, sequence 2 //matlab
+Seq1=y(1:64*64);%Extract 64*64=4096 values from y, sequence 1 
+Seq2=y(64*64+1:64*64*2);%Extract the next 4096 values from y, from 4097 to 64*64*2=8192, sequence 2 
 ```
 Chaotic sequence preparation
 
 ```matlab
-J_Out=ImageEncry(J,Seq1,Seq2);%Watermarking image encryption //matlab
+J_Out=ImageEncry(J,Seq1,Seq2);%Watermarking image encryption 
 ```
 Watermark data encryption
 
 ```matlab
-size=512;  //matlab
-N=64;  //matlab
-K=8;  //matlab
-D=zeros(size);E=0.01; //matlab
-for p=1:size/K   //matlab
-    for q=1:size/K  //matlab
-        x=(p-1)*K+1;   //matlab
-        y=(q-1)*K+1;   //matlab
-        I_dct=I(x:x+K-1,y:y+K-1);  //matlab
-        I_dct1=dct2(I_dct);  //matlab
-        if J_Out(p,q)==0  //matlab
-            alfa=-1;  //matlab
-        else   //matlab
-            alfa=1;  //matlab
-        end  //matlab 
-        I_dct2=I_dct1+alfa*E;% adjust the DCT coefficient //matlab
-        I_dct=idct2(I_dct2); //matlab
-        D(x:x+K-1,y:y+K-1)=I_dct; //matlab
-    end //matlab
- end //matlab
+size=512;  
+N=64;  
+K=8;  
+D=zeros(size);E=0.01; 
+for p=1:size/K   
+    for q=1:size/K  
+        x=(p-1)*K+1;   
+        y=(q-1)*K+1;   
+        I_dct=I(x:x+K-1,y:y+K-1);  
+        I_dct1=dct2(I_dct);  
+        if J_Out(p,q)==0  
+            alfa=-1;  
+        else   
+            alfa=1;  
+        end  
+        I_dct2=I_dct1+alfa*E;% adjust the DCT coefficient 
+        I_dct=idct2(I_dct2); 
+        D(x:x+K-1,y:y+K-1)=I_dct; 
+    end
+ end 
  
-figure;imshow(round(D),[]);%Image after adding watermark  //matlab
+figure;imshow(round(D),[]);%Image after adding watermark  
 ``` 
 DCT process.<br>
 
@@ -84,7 +93,8 @@ DCT process.<br>
 % hh=fspecial('gaussian',3,0.4); standard deviation of 0.4
  QQ=filter2(hh,D); %Gaussian filtering is performed on D
 ```
-Low-pass filtering attacks. There are three types of low-pass filtering attacks with standard deviations of 0.2, 0.35, and 0.4. This line needs to be uncommented at runtime.
+Low-pass filtering attacks. There are three types of low-pass filtering attacks with standard deviations of 0.2, 0.35, and 0.4.<br> 
+This line needs to be uncommented at runtime.
 
 ```matlab
 % R=imrotate(D,10,'bilinear','crop'); %Rotation 10°
@@ -92,7 +102,8 @@ Low-pass filtering attacks. There are three types of low-pass filtering attacks 
 % R=imrotate(D,45,'bilinear','crop'); %Rotation 45°
 QQ=R;
 ```
-Spin attack. There are three types of rotation attacks, namely rotation 10°, 20°, and 45°. This line needs to be uncommented at runtime.
+Spin attack. There are three types of rotation attacks, namely rotation 10°, 20°, and 45°.<br>
+This line needs to be uncommented at runtime.
 
 ```matlab
 
@@ -101,7 +112,8 @@ Spin attack. There are three types of rotation attacks, namely rotation 10°, 20
 % D(256:512,256:512)=0;  Q2=D; % lower right corner 
 QQ=D;
 ```
-Shear attack. There are three types of clipping attacks, namely clipping the top left corner, the middle corner, and the bottom right corner. This line needs to be uncommented at runtime.
+Shear attack. There are three types of clipping attacks, namely clipping the top left corner, the middle corner, and the bottom right corner.<br>
+This line needs to be uncommented at runtime.
 
 ```matlab
 D = mat2gray(D);  % graying
@@ -110,7 +122,8 @@ D = mat2gray(D);  % graying
 % Z=imnoise(D, 'speckle', 0.1);       %Speckle noise - Intensity is 0.1
 QQ=Z;
 ```
-Noise attack. There are three kinds of noise interference, namely Gaussian noise, salt and pepper noise and speckle noise. This line needs to be uncommented at runtime.
+Noise attack. There are three kinds of noise interference, namely Gaussian noise, salt and pepper noise and speckle noise.<br>
+This line needs to be uncommented at runtime.
 
 ```matlab
 W=zeros(64,64);
