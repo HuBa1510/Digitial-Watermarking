@@ -2,8 +2,8 @@ function Out=ImageEncry(In,Seq1,Seq2)
 [m,n]=size(In);
 Inn=reshape(In,[1,m*n]);
 
-[~,Idex1] = sort(Seq1);%对序列 Seq1 进行升序排序，并获取排序后的索引 Idex1
-Inn1=Inn(Idex1);%对 Inn1 进行重新排序
+[~,Idex1] = sort(Seq1);
+Inn1=Inn(Idex1);
 [~,Idex2] = sort(Seq2);
 Inn=Inn1(Idex2);
 

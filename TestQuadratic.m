@@ -1,3 +1,4 @@
+%As amplitude A increases, the system '8' loop line 
 clc;clear
 T=1:200000;
 f=0.01;m0=0;B=0.1;
@@ -23,6 +24,7 @@ grid on
 set(gca,'linewidth',0.5,'fontsize',12,'fontname','Times');
 legend('{\it A}=1','{\it A}=2','{\it A}=3')
 %----------------------------------------------
+%As frequencies f increases, the system '8' loop line 
 clc;clear
 T=1:200000;
 A=0.5;m0=0;B=0.1;

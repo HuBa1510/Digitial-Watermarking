@@ -1,12 +1,12 @@
 function Out=State(x,LEs)
 ee=0.01;
 if LEs(1)>ee && LEs(2)>ee
-    Out=20;%超混沌
+    Out=20;%hyperchaos
 elseif LEs(1)>ee && abs(LEs(2))<ee
-    Out=19;%混沌
+    Out=19;%chaos
 elseif  abs(LEs(1))<ee 
-    Out=18;%拟周期
-else%周期态；涉及到序列
+    Out=18;%quasi periodicity
+else%periodicity
     xtemp=[];
      for i=2:length(x)-1
          if x(i)>=x(i-1) && x(i)>=x(i+1)

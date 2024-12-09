@@ -1,76 +1,78 @@
 clc;clear
-%https://blog.csdn.net/m0_59833680/article/details/119908381
-I=imread('Peppers.bmp');
+I=imread('Peppers.bmp');%Original target image
 figure;imshow(I);
+J=imread('logo.png');%Watermark image
 
-J=imread('logo.png');
-J=double(imresize(J(:,:,1),[64,64]));%对J选择通道1(假设为RGB)，并缩放为64*64);
-J=sgn(J);%转换为0,1值
-figure;imshow(imresize(J,8));%图片扩大十倍展示
+%The watermark image is preprocessed----------
+J=double(imresize(J(:,:,1),[64,64]));%Select channel 1(let's say RGB) for J and scale it to 64*64;
+J=sgn(J);%Convert to 0 or 1
+figure;imshow(imresize(J,8));%The picture is displayed 8 times larger
 
-%混沌序列准备------
-%[y,Ly]=Logistic(4,0.55,100000);
+%Chaotic sequence preparation------
 [y,q,Ly1,Ly2]=SineSquaredMemristorShuiyin(1.55,1.8,0.4,0.1,100000);
 y=y(1000:end);
-Seq1=y(1:64*64);%从y中提取64*64=4096个值，序列1
-Seq2=y(64*64+1:64*64*2);%从y中提取接下来的4096个值，从4097到64*64*2=8192，序列2
-%-----------水印数据加密---------
-J_Out=ImageEncry(J,Seq1,Seq2);%水印图像加密
+Seq1=y(1:64*64);%Extract 64*64=4096 values from y, sequence 1
+Seq2=y(64*64+1:64*64*2);%Extract the next 4096 values from y, from 4097 to 64*64*2=8192, sequence 2
+
+%---------Watermark data encryption--------
+J_Out=ImageEncry(J,Seq1,Seq2);%Watermarking image encryption
 % J_Out=J;
 
 size=512; 
-N=64;% 块的数量 是否应该是64
-K=8;  % 块的大小，8*8
+N=64; 
+K=8;  
 D=zeros(size);E=0.01;
 for p=1:size/K
     for q=1:size/K
-        x=(p-1)*K+1; % 当前块的起始行
-        y=(q-1)*K+1;% 当前块的起始列
-        I_dct=I(x:x+K-1,y:y+K-1);%提取当前块
-        I_dct1=dct2(I_dct);% DCT变换
+        x=(p-1)*K+1; 
+        y=(q-1)*K+1;
+        I_dct=I(x:x+K-1,y:y+K-1);
+        I_dct1=dct2(I_dct);
         if J_Out(p,q)==0
             alfa=-1;
         else
             alfa=1;
         end
-        I_dct2=I_dct1+alfa*E;% 调整DCT系数
-        I_dct=idct2(I_dct2);% IDCT变换
+        I_dct2=I_dct1+alfa*E;% adjust the DCT coefficient
+        I_dct=idct2(I_dct2);
         D(x:x+K-1,y:y+K-1)=I_dct;
     end
  end
  
-figure;imshow(round(D),[]);%加入水印之后的图片
- %%%%%%----------------对加入水印的图像进行各种攻击
- %%%低通滤波攻击
-% hh=fspecial('gaussian',3,0.2);%定义3*3的高斯滤波器，标准差为0.2 
-% hh=fspecial('gaussian',3,0.35);
-% hh=fspecial('gaussian',3,0.4); 
-% QQ=filter2(hh,D); %对D进行高斯滤波
+figure;imshow(round(D),[]);%Image after adding watermark 
 
- %%%旋转攻击
-% R=imrotate(D,10,'bilinear','crop');
-%  R=imrotate(D,20,'bilinear','crop');
- % R=imrotate(D,45,'bilinear','crop');
+%%%Perform various attacks on watermarked images-----------------------------------------------
+
+%%%Low-pass filtering attacks-------------------
+% hh=fspecial('gaussian',3,0.2);%Define a 3*3 Gaussian filter with a standard deviation of 0.2
+% hh=fspecial('gaussian',3,0.35);standard deviation of 0.35
+% hh=fspecial('gaussian',3,0.4); standard deviation of 0.4
+% QQ=filter2(hh,D); %Gaussian filtering is performed on D
+
+ %%%spin attack-------------------
+% R=imrotate(D,10,'bilinear','crop');%Rotation 10°
+%  R=imrotate(D,20,'bilinear','crop');%Rotation 20°
+ % R=imrotate(D,45,'bilinear','crop');%Rotation 45°
  % QQ=R;
 
- %%%%%剪切攻击
-% D(1:256,1:256)=0;   Q2=D;
-% D(128:384,128:384)=0;   Q2=D;
-% D(256:512,256:512)=0;  Q2=D;
+ %%%%%Shear attack------------
+% D(1:256,1:256)=0;   Q2=D; % top left corner
+% D(128:384,128:384)=0;   Q2=D; % center
+% D(256:512,256:512)=0;  Q2=D; % lower right corner
 % QQ=D;
 
- %噪声攻击
- D = mat2gray(D); 
-% Z=imnoise(D, 'gaussian',0,0.1); %高斯白噪声-均值为0, 方差为0.1
-% Z=imnoise(D, 'salt & pepper', 0.1);%椒盐噪声-噪声密度为0.1
- Z=imnoise(D, 'speckle', 0.1);%斑点噪声-强度为0.1
- QQ=Z;
+ %Noise attack-------------
+% D = mat2gray(D); % graying
+% Z=imnoise(D, 'gaussian',0,0.1); %Gaussian White noise - mean 0, variance 0.1
+% Z=imnoise(D, 'salt & pepper', 0.1);%Salt and pepper noise - Noise density is 0.1
+% Z=imnoise(D, 'speckle', 0.1);%Speckle noise - Intensity is 0.1
+% QQ=Z;
   
 W=zeros(64,64);
-figure;imshow(QQ,[]);%受攻击的带水印图片
+figure;imshow(QQ,[]);%Watermarked image under attack
 title('Speckle noise interference');
 
- % 提取水印
+ % Extract watermark
 for  p=1:size/K
     for  q=1:size/K
         x=(p-1)*K+1;
@@ -88,26 +90,27 @@ for  p=1:size/K
 end
 figure;
 W_out=ImageDecry(W,Seq1,Seq2);
-imshow(imresize(round(W_out),10));%恢复得到的水印图片；
+imshow(imresize(round(W_out),10));%Recovered the watermark image；
 title('Watermark extracted from the image');
-%--------------------------Hopfield神经网络部分-----------------------------
-%----------------------------将水印图像切割为四部分-------------------
-%-------------------------------训练4个Hopfield网络------------------
-J=sign(J-0.000001);% sign 函数将正值转换为 1，负值转换为 -1，零保持不变
+%--------------------------Part of Hopfield neural network----------------------------------
+%----------------------------The watermark image is cut into four parts-------------------
+%-------------------------------Train 4 Hopfield networks------------------------------------
+J=sign(J-0.000001);% The sign function converts positive values to 1, negative values to -1, and zero remains unchanged
 J1=J(1:32,1:32);J2=J(1:32,33:64);
 J3=J(33:64,1:32);J4=J(33:64,33:64);
 J1=sign(J1-0.000001);J2=sign(J2-0.000001);
-J3=sign(J3-0.000001);J4=sign(J4-0.000001);% 这样可以将任何非常接近零的值也转换为 -1 或 1。
-J1=J1(:)';W1=MyHopfield(J1'); %转换为行向量
-figure;contourf(W1)%权重矩阵的轮廓图
+J3=sign(J3-0.000001);J4=sign(J4-0.000001);
+J1=J1(:)';W1=MyHopfield(J1'); %Convert to a row vector
+figure;contourf(W1)%Outline of the weight matrix
 J2=J2(:)';W2=MyHopfield(J2');
 figure;contourf(W2)
 J3=J3(:)';W3=MyHopfield(J3');
 figure;contourf(W3)
 J4=J4(:)';W4=MyHopfield(J4');
 figure;contourf(W4)
-%----------------将恢复的水印图像切割为四个部分---------------
-Ww=sign(W_out-0.000001);%将图片数据转换为-1,1的值
+
+%----------------The recovered watermark image is cut into four parts---------------
+Ww=sign(W_out-0.000001);%Converts the picture data to a value of -1,1
 
 Ww1=Ww(1:32,1:32);Ww2=Ww(1:32,33:64);
 Ww3=Ww(33:64,1:32);Ww4=Ww(33:64,33:64);
@@ -168,17 +171,15 @@ Out=SimMyHopfield(W4,W_in_4');
 Outt4=reshape(Out,[32,32]);
 
 Final=[Outt1 Outt2;Outt3 Outt4];
-figure;imshow(imresize(Final,10))%Hopfield神经网络恢复得到的水印图片
+figure;imshow(imresize(Final,10))%Watermark image recovered by Hopfield neural network
 title('Watermark extracted by Hopfield network')
 
+%The results are displayed in the same Figure---------------------
 %  figure;imshow(QQ,[]);title('Spin attack');
 %  figure;imshow(imresize(W_out,8),[]);title('Watermark extracted from the image');
 %  figure;imshow(imresize(Final,8),[]);title('Watermark extracted by Hopfield network')
 
-% imwrite(J,'Shuiyin.bmp');
-% imwrite(W_out,'Shuiyin_W.png');
-% imwrite(Final,'Final.png');
-%%%%%%-----------------前后水印相似比较-------------------
+%%%Similarity------------------------------------
 % for i=1:64
 %     for j=1:64
 %         if Final(i,j)<=0
@@ -197,9 +198,9 @@ title('Watermark extracted by Hopfield network')
 %         end
 %     end
 % end
-% J=double(J);%原始水印
-% W=double(W_out);%受攻击后恢复的水印
-% F=double(Final);%Hopfield神经网络恢复的水印
+% J=double(J);%Original watermark
+% W=double(W_out);%Watermark recovered after an attack
+% F=double(Final);%Watermark recovered by Hopfield neural network
 % sumJ1=0;sumJ2=0;sumW=0;sumF=0;
 % for  j=1:64
 %     for  i=1:64
@@ -209,5 +210,7 @@ title('Watermark extracted by Hopfield network')
 %         sumF=sumF+F(j,i)*F(j,i);
 %     end
 % end
-% CH1=(abs(sumW-sumJ1))/sumJ1;% 计算相似度，越接近于0越相似
+
+% Calculate the similarity, the closer it is to 0, the more similar it is
+% CH1=(abs(sumW-sumJ1))/sumJ1;
 % CH2=(abs(sumF-sumJ2))/sumJ2;
