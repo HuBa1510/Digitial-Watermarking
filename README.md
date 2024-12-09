@@ -1,5 +1,5 @@
 # A novel digital watermarking algorithm 
-=
+
  A novel digital image watermarking algorithm that combines the randomness of discrete memristor chaotic mapping with the memory and enhancement properties of the Hopfield neural network is desgined in this paper. This is a complete flowchart of the algorithm. 
 
 ![Figure1.jpg](https://s2.loli.net/2024/12/09/miaGrMsnOY8HyVQ.jpg)
