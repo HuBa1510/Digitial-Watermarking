@@ -7,21 +7,21 @@
 Specifically, a novel two-dimensional discrete memristor mapping system is devised in this study to generate two sets of pseudo-random sequences, respectively, for encrypting the pixel value and position of the watermark image. <br>
 Then, with the aid of the memory and recovery characteristics of the Hopfield neural network, the watermark image extracted from the image is precisely restored. Finally, the extracted watermark images are tested through numerical simulation and visual simulation to validate the efficiency of the algorithm.
 
-##Analysis of anti-attack performance
+## Analysis of anti-attack performance
 
-###Spin attack
+### Spin attack
 ![Figure2.jpg](https://s2.loli.net/2024/12/09/uJomFsW5QSTet6a.jpg)
 
-###Low-pass filtering attacks
+### Low-pass filtering attacks
 ![Figure3.jpg](https://s2.loli.net/2024/12/09/96Cq3PLOmhSYMWj.jpg)
 
-###Shear attack
+### Shear attack
 ![Figure4.jpg](https://s2.loli.net/2024/12/09/LcmGP5FNEQrbdRz.jpg)
 
-###Noise interference
+### Noise interference
 ![Figure5.jpg](https://s2.loli.net/2024/12/09/WaBpoNTPvnk8fe2.jpg)
 
-##Run "Main.m"
+## Run "Main.m"
 ```matlab
 clc;clear//matlab
 I=imread('Peppers.bmp');%Original target image //matlab
@@ -224,7 +224,6 @@ title('Watermark extracted by Hopfield network')
 The watermark image is extracted and displayed by Hopfield.
 
 ```matlab
-Similarity------------------------------------
  for i=1:64
      for j=1:64
          if Final(i,j)<=0
@@ -265,9 +264,9 @@ The similarity between directly extracted watermark and Hopfield extracted water
 Pearson Correlation Coefficient(PCC).<br>
 Run the attacked W_out from Main.m to calculate the PCC value between direct extraction and Hopfield extraction under this attack.
 
-###Run "TestBER.m"
+### Run "TestBER.m"
 Bit Error Ratio (BER).<br>
 By running the attacked W_out from Main.m, you can calculate the BER value between direct extraction and Hopfield extraction under this attack.
 
-##Statement
+## Statement
 logo.png is the original watermark image, Shuiyin.png is the pre-processed watermark image, and Peppers.bmp is the original target image.
